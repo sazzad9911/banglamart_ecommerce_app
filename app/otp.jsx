@@ -1,5 +1,4 @@
-
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { useEffect } from "react";
@@ -15,23 +14,34 @@ import {
   Dimensions,
   Button,
 } from "react-native";
+import { useToast } from "native-base";
+import { useDispatch } from "react-redux";
+import { postApi } from "../apis";
+import { hideLoader, showLoader } from "../reducers/loader";
 const { width, height } = Dimensions.get("window");
 export default function OTP() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checked, setChecked] = React.useState(false);
   const [second, setSecond] = useState(60);
+  const { token, phone } = useLocalSearchParams();
+  const toast = useToast();
+  const dispatch = useDispatch();
+  const [otp, setOtp] = useState();
+  const [newToken, setNewToken] = useState();
+  //console.log(token);
   useEffect(() => {
     setInterval(() => {
       setSecond((v) => (v > 0 ? v - 1 : 0));
     }, 1000);
   }, []);
+
   return (
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ minHeight: height, justifyContent: "center" }}>
           <View className=" w-full items-center mb-5">
-            <Image style={styles.image} source={require("../assets/logo.png")} />
+            <Image
+              style={styles.image}
+              source={require("../assets/logo.png")}
+            />
             <Text className="text-lg">OTP Verification</Text>
           </View>
           <StatusBar style="auto" />
@@ -40,7 +50,8 @@ export default function OTP() {
               style={styles.TextInput}
               placeholder={"6 digit OTP"}
               placeholderTextColor="#003f5c"
-              onChangeText={(email) => setEmail(email)}
+              onChangeText={(email) => setOtp(email)}
+              value={otp}
             />
           </View>
           <View className="flex flex-row items-center justify-between mx-2">
@@ -48,8 +59,21 @@ export default function OTP() {
             <View>
               {!second ? (
                 <Text
-                  onPress={() => {
-                    setSecond(60);
+                  onPress={async () => {
+                    dispatch(showLoader());
+                    try {
+                      const res = await postApi("/auth/send-otp", {
+                        phone: phone,
+                      });
+                      dispatch(hideLoader());
+                      setNewToken(res.data.token)
+                      setSecond(60);
+                    } catch (error) {
+                      dispatch(hideLoader());
+                      toast.show({
+                        title: error.response.data.message,
+                      });
+                    }
                   }}
                   className="font-bold text-sky-500"
                 >
@@ -59,13 +83,28 @@ export default function OTP() {
             </View>
           </View>
           <TouchableOpacity
-            onPress={() => {
-              router.push({
-                pathname: "/phone_register",
-                params: {
-                  verified: true,
-                },
-              });
+            onPress={async () => {
+              dispatch(showLoader());
+              try {
+                const res = await postApi("/auth/verify-otp", {
+                  token: newToken ? newToken : token,
+                  otp: otp,
+                });
+
+                dispatch(hideLoader());
+                router.push({
+                  pathname: "/phone_register",
+                  params: {
+                    verified: res.data.token,
+                    
+                  },
+                });
+              } catch (error) {
+                dispatch(hideLoader());
+                return toast.show({
+                  title: error.response.data.message,
+                });
+              }
             }}
             style={[styles.loginBtn, { marginTop: 20 }]}
           >
@@ -95,7 +134,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 80,
     borderRadius: 40,
-    backgroundColor:"#D2F5F5"
+    backgroundColor: "#D2F5F5",
   },
   inputView: {
     backgroundColor: "#D2F5F5",

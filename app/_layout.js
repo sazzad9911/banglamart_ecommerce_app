@@ -8,12 +8,15 @@ import Header from "./components/Header";
 import { Provider } from "react-redux";
 import store from "../store";
 import { LogBox } from "react-native";
-LogBox.ignoreLogs(['In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.']);
+import Loader from "./components/main/Loader";
+LogBox.ignoreLogs([
+  "In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.",
+]);
 
 export default function Layout() {
   return (
     <NativeBaseProvider>
-      <Provider store={store}>
+      <Provider style={{ flex: 1 }} store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
           <Stack>
             <Stack.Screen
@@ -88,6 +91,7 @@ export default function Layout() {
             />
           </Stack>
         </GestureHandlerRootView>
+        <Loader />
       </Provider>
     </NativeBaseProvider>
   );

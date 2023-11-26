@@ -1,6 +1,6 @@
-
 import { router, useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useToast } from "native-base";
 import React, { useState } from "react";
 import {
   StyleSheet,
@@ -14,12 +14,29 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import { postApi } from "../apis";
+import { hideLoader, showLoader } from "../reducers/loader";
 const { width, height } = Dimensions.get("window");
+import * as Yup from "yup";
+import InfoAlert from "./components/main/InfoAlert";
+import { storeUser } from "../reducers/user";
 export default function PhoneRegister() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [checked, setChecked] = React.useState(false);
   const { verified } = useLocalSearchParams();
+  const toast = useToast();
+  const dispatch = useDispatch();
+  const [values, setValues] = useState({
+    phone: "",
+    name: "",
+    password: "",
+  });
+  const formSchema = Yup.object().shape({
+    password: Yup.string()
+      .min(6, "Too Short password!")
+      .max(70, "Too Long password!")
+      .required("Password is Required"),
+    name: Yup.string().required("Name is Required"),
+  });
   if (!verified) {
     return (
       <KeyboardAvoidingView
@@ -31,15 +48,39 @@ export default function PhoneRegister() {
         </View>
         <View style={[styles.inputView, { marginBottom: 20 }]}>
           <TextInput
+            keyboardType="number-pad"
             style={styles.TextInput}
             placeholder={"Phone Number"}
             placeholderTextColor="#003f5c"
-            onChangeText={(email) => setEmail(email)}
+            onChangeText={(email) => setValues({ ...values, phone: email })}
           />
         </View>
         <TouchableOpacity
-          onPress={() => {
-            router.push("/otp");
+          onPress={async () => {
+            if (values.phone.length != 11) {
+              return toast.show({
+                title: "Invalid Phone Number",
+              });
+            }
+            dispatch(showLoader());
+            try {
+              const res = await postApi("/auth/send-otp", {
+                phone: values.phone,
+              });
+              dispatch(hideLoader());
+              toast.show({
+                title: "OTP was sent successfully",
+              });
+              router.push({
+                pathname: "/otp",
+                params: { token: res.data.token, phone: values.phone },
+              });
+            } catch (error) {
+              dispatch(hideLoader());
+              return toast.show({
+                title: error.response.data.message,
+              });
+            }
           }}
           style={[styles.loginBtn, { marginTop: 20 }]}
         >
@@ -70,10 +111,10 @@ export default function PhoneRegister() {
               style={styles.TextInput}
               placeholder={"Name"}
               placeholderTextColor="#003f5c"
-              onChangeText={(email) => setEmail(email)}
+              onChangeText={(val) => setValues({ ...values, name: val })}
+              value={values.name}
             />
           </View>
-          
 
           <View style={styles.inputView}>
             <TextInput
@@ -81,11 +122,44 @@ export default function PhoneRegister() {
               placeholder="Password"
               placeholderTextColor="#003f5c"
               secureTextEntry={true}
-              onChangeText={(password) => setPassword(password)}
+              onChangeText={(password) =>
+                setValues({ ...values, password: password })
+              }
+              value={values.password}
             />
           </View>
 
-          <TouchableOpacity style={[styles.loginBtn, { marginTop: 20 }]}>
+          <TouchableOpacity
+            onPress={async () => {
+              dispatch(showLoader());
+              try {
+                const val = await formSchema.validate(values);
+                const res = await postApi("/auth/sign-up-with-phone", {
+                  name: val.name,
+                  password: val.password,
+                  token: verified,
+                });
+                dispatch(hideLoader());
+                dispatch(storeUser(res.data));
+                router.replace("/user");
+              } catch (e) {
+                dispatch(hideLoader());
+                const val = e?.code?.match("ERR_BAD_REQUEST");
+                toast.show({
+                  render: (id) => (
+                    <InfoAlert
+                      id={id}
+                      title={"!Ops"}
+                      isClosable={false}
+                      variant={"solid"}
+                      description={val ? e.response.data.message : e.message}
+                    />
+                  ),
+                });
+              }
+            }}
+            style={[styles.loginBtn, { marginTop: 20 }]}
+          >
             <Text style={styles.loginText}>REGISTER</Text>
           </TouchableOpacity>
           <TouchableOpacity

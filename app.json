@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "Banglamart Ecommerce",
-    "slug": "banglamart_ecommerce",
-    "version": "1.0.0",
+    "slug": "banglamart",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -22,7 +22,13 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.banglamart.banglamart",
+      "versionCode":2
+    },
+    "updates": {
+      "url": "https://u.expo.dev/bb365e11-3cf2-4d26-aeac-1d5c88c8fa59",
+      "enabled": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -35,14 +41,11 @@
         "origin": false
       },
       "eas": {
-        "projectId": "2cdc6d40-fbdc-4b04-84bd-5d092aefe8da"
+        "projectId": "bb365e11-3cf2-4d26-aeac-1d5c88c8fa59"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    },
-    "updates": {
-      "url": "https://u.expo.dev/2cdc6d40-fbdc-4b04-84bd-5d092aefe8da"
     }
   }
 }
