@@ -8,19 +8,24 @@ import {
 import React from "react";
 import { AntDesign } from "@expo/vector-icons";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { Avatar } from "native-base";
+import Avatar from "../components/main/Avatar";
+import { useSelector } from "react-redux";
+import { router, useFocusEffect } from "expo-router";
+import { url } from "../../apis";
 
 export default function Profile() {
   const inset = useSafeAreaInsets();
+  const user = useSelector((s) => s.user);
+
+  useFocusEffect(() => {
+    !user && router.push("/login");
+  });
   return (
     <ScrollView style={{ flex: 1 }}>
       <View style={{ marginTop: inset?.top, alignItems: "center" }}>
-        <TouchableOpacity className=" top-1 right-0 h-[40] w-[40] justify-center items-center rounded-full bg-gray-400">
-          <AntDesign name="edit" size={20} color="black" />
-        </TouchableOpacity>
-        <Avatar style={{width:80, height:80}} size="giant" source={require("../../assets/ss.jpg")} />
+        <Avatar source={{uri:`${url}${user.user.image}`}}/>
+        <Text>{user?.user?.name}</Text>
       </View>
     </ScrollView>
   );
 }
- 

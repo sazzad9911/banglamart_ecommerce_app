@@ -24,7 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.banglamart.banglamart",
-      "versionCode":2
+      "versionCode":3
     },
     "updates": {
       "url": "https://u.expo.dev/bb365e11-3cf2-4d26-aeac-1d5c88c8fa59",
