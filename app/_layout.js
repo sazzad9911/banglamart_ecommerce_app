@@ -89,6 +89,13 @@ export default function Layout() {
                 header: (props) => <Header title="Details" {...props} />,
               }}
             />
+            <Stack.Screen
+              name="update"
+              options={{
+                href: "/update",
+                header: (props) => <Header title="Update Profile" {...props} />,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
         <Loader />

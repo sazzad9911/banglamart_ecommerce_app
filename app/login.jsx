@@ -20,6 +20,7 @@ import InfoAlert from "./components/main/InfoAlert";
 import { useDispatch } from "react-redux";
 import { storeUser } from "../reducers/user";
 import { hideLoader, showLoader } from "../reducers/loader";
+import { storeData } from "../action";
 
 export default function Login() {
   const [checked, setChecked] = React.useState("email");
@@ -69,6 +70,7 @@ export default function Login() {
         //   dispatch(storeUser(e.data))
         // })
         dispatch(storeUser(res.data));
+        await storeData("USER",res.data)
         router.replace("/user");
         dispatch(hideLoader())
         return;
@@ -78,6 +80,7 @@ export default function Login() {
         email: val.email,
         password: val.password,
       });
+      await storeData("USER",res.data)
       dispatch(storeUser(res.data));
       router.replace("/user");
       dispatch(hideLoader())
