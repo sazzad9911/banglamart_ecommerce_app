@@ -6,6 +6,7 @@ export const numberToArray = (num) => {
   return arr;
 };
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from 'expo-image-picker';
 import { Alert } from "react-native";
 export const storeData = async (key, value) => {
   try {
@@ -34,3 +35,18 @@ export function json2array(json){
   });
   return result;
 }
+export const pickImage = async () => {
+  // No permissions request is necessary for launching the image library
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1,
+  });
+
+  console.log(result);
+
+  if (!result.canceled) {
+    return result.assets[0]
+  }
+};

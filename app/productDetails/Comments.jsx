@@ -1,6 +1,6 @@
 import { View, Text, Image, TextInput, Button } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Avatar } from "native-base";
+import { Avatar, TextArea } from "native-base";
 import { getApi, postApi, url } from "../../apis";
 import {
   Feather,
@@ -36,14 +36,15 @@ export default function Comments({ data }) {
         <Cart data={d} key={i} />
       ))}
       {!comments && <Loader />}
-      <TextInput
+      <View style={{height:12}}/>
+      <TextArea
         value={text}
         onChangeText={setText}
         multiline={true}
-        className="border border-gray-400 rounded-md px-2 py-1 h-[50px] mt-4 mb-2"
+        
         placeholder="Write comments"
       />
-      <View className="flex flex-row justify-end mb-4">
+      <View className="flex flex-row justify-end mb-4 mt-3">
         <Button title="Send" />
       </View>
     </View>

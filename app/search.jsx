@@ -20,9 +20,9 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import Filter from "./components/search/Filter";
 import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
-import Loader from "./components/main/Loader";
 import { getApi } from "../apis";
 import ProductCart from "./components/products/ProductCart";
+import Loader from "./components/Loader";
 
 export default function Search() {
   const inset = useSafeAreaInsets();

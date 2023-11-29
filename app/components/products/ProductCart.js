@@ -9,7 +9,9 @@ import { useRouter } from "expo-router";
 export default function ProductCart({ data, offers, style }) {
   const router = useRouter();
   return (
-    <TouchableOpacity
+    <TouchableOpacity style={{
+      backgroundColor:"#fff"
+    }}
       onPress={() =>
         router.push({
           pathname: "/productDetails/[id]",

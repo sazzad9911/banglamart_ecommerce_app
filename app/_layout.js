@@ -96,6 +96,20 @@ export default function Layout() {
                 header: (props) => <Header title="Update Profile" {...props} />,
               }}
             />
+            <Stack.Screen
+              name="webview"
+              options={{
+                href: "/webview",
+                headerShown:false
+              }}
+            />
+             <Stack.Screen
+              name="order_list"
+              options={{
+                href: "/order_list",
+                header: (props) => <Header title="Order List" {...props} />,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
         <Loader />

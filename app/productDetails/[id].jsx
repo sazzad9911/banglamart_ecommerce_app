@@ -127,7 +127,7 @@ export default function ProductDetails() {
         </View>
         <Quantity data={data} />
         <InputButton />
-        <View className="flex flex-row justify-between">
+        <View className="flex flex-row justify-between gap-4">
           <Button
             style={{ width: width / 2 - 30 }}
             appearance={"outline"}

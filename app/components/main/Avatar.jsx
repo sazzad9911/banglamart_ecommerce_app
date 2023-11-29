@@ -2,7 +2,7 @@ import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 
-export default function Avatar({ source, editable, style }) {
+export default function Avatar({ source, editable, style ,onPress}) {
   return (
     <View
       style={[{
@@ -19,7 +19,7 @@ export default function Avatar({ source, editable, style }) {
       ) : (
         <FontAwesome name="user-circle-o" size={60} color="skyblue" />
       )}
-      <TouchableOpacity className="absolute bottom-0 right-[-6px] bg-gray-50 p-[2px] justify-center items-center">
+      <TouchableOpacity onPress={onPress} className="absolute bottom-0 right-[-6px] bg-gray-50 p-[2px] justify-center items-center">
         <FontAwesome5 name="edit" size={18} color="blue" />
       </TouchableOpacity>
     </View>

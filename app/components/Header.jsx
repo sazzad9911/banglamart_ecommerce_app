@@ -10,7 +10,7 @@ export default function Header(props) {
 
   return (
     <View
-      className={`px-5 bg-white shadow-md h-[60px]  items-center flex flex-row`}
+      className={`px-5 bg-white shadow-md h-[70px]  items-center flex flex-row `}
       style={{
         paddingTop: inset?.top,
       }}
