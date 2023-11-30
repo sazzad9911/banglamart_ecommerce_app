@@ -3,6 +3,7 @@ import TabBar from "../components/TabBar";
 import { View } from "react-native";
 import SearchHeader from "../components/SearchHeader";
 import Header from "../components/Header";
+import Head from "../components/Head";
 
 export default function Layout() {
   return (
@@ -18,7 +19,7 @@ export default function Layout() {
         name="myCart"
         options={{
           href: "/user/myCart",
-          header: (props) => <Header title="My Cart" {...props} />,
+          header: (props) => <Head title="My Cart" {...props} />,
         }}
       />
       <Tabs.Screen

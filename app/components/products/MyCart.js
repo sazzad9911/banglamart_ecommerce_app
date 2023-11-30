@@ -1,15 +1,19 @@
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import React from "react";
-import { putApi, url } from "../../../apis";
+import { deleteApi, putApi, url } from "../../../apis";
 import { useState } from "react";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { hideLoader, showLoader } from "../../../reducers/loader";
 
 export default function MyNewCart({ data }) {
   const [quantity, setQuantity] = useState(data?.product.minOrder);
-  const user=useSelector(s=>s.user)
+  const user = useSelector((s) => s.user);
+  const dispatch=useDispatch()
   const updateQuantity = async (num, id) => {
     try {
+      dispatch(showLoader())
       await putApi(
         "/cart/update",
         {
@@ -18,13 +22,28 @@ export default function MyNewCart({ data }) {
         },
         user.token
       );
+      dispatch(hideLoader())
     } catch (error) {
-      console.error(error.mess);
+      dispatch(hideLoader())
+      console.error(error.response.data.message);
     }
   };
-  useEffect(()=>{
-    updateQuantity(quantity,data.id)
-  },[quantity])
+  const deleteCart = async (id) => {
+    dispatch(showLoader())
+    try {
+      await deleteApi(
+        `/cart/delete?cartId=${id}`,
+        user.token
+      );
+      dispatch(hideLoader())
+    } catch (error) {
+      dispatch(hideLoader())
+      console.error(error.response.data.message);
+    }
+  };
+  useEffect(() => {
+    updateQuantity(quantity, data.id);
+  }, [quantity]);
   return (
     <View className="flex flex-row flex-1 bg-white rounded-md overflow-hidden">
       <Image
@@ -35,17 +54,25 @@ export default function MyNewCart({ data }) {
         <Text className="flex-1 font-semibold">
           {data.product.title} ({data.quantity})
         </Text>
-        <View className="flex flex-row">
+        <View className="flex flex-row justify-between items-center">
           {data.product.fixedPrice && (
             <Text>
               Price:{" "}
-              {data.product.price -
+              {(data.product.price -
                 (data.product.percentage
                   ? (data.product.price * data.product.offer) / 100
-                  : data.product.offer)}
+                  : data.product.offer)) *
+                data.quantity}
               ৳
             </Text>
           )}
+          <TouchableOpacity onPress={()=>deleteCart(data.id)}>
+            <MaterialCommunityIcons
+              name="delete-circle"
+              size={24}
+              color="red"
+            />
+          </TouchableOpacity>
         </View>
         <View className="flex flex-row items-center">
           {data?.colors && (

@@ -9,10 +9,11 @@ import {
   Modal,
   Linking,
   Share,
+  TextInput,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
-import { getApi, url } from "../../apis";
+import { router, useLocalSearchParams } from "expo-router";
+import { getApi, postApi, url } from "../../apis";
 import Loader from "../components/main/Loader";
 import Slider from "../components/Home/Slider";
 const { width, height } = Dimensions.get("window");
@@ -23,18 +24,34 @@ import {
   Ionicons,
   MaterialCommunityIcons,
 } from "@expo/vector-icons";
-import { Avatar } from "native-base";
+import { Avatar, useToast } from "native-base";
 import Quantity from "./Quantity";
 import InputButton from "./InputButton";
 import { Button } from "native-base";
 import Review from "./Review";
 import Comments from "./Comments";
 import RenderHTML from "react-native-render-html";
+import Colors from "./Colors";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoader, showLoader } from "../../reducers/loader";
+import InfoAlert from "../components/main/InfoAlert";
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams();
   const [data, setData] = useState();
   const [images, setImages] = useState([]);
+  const user = useSelector((s) => s.user);
+  const toast = useToast();
+  const [values, setValues] = useState({
+    productId: "",
+    quantity: 0,
+    offerPrice: undefined,
+    colors: undefined,
+    sizes: undefined,
+    couponId: undefined,
+  });
+  const [coupon, setCoupon] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     getApi(`/product/get-by-id?id=${id}`).then((res) => {
@@ -48,6 +65,17 @@ export default function ProductDetails() {
       setImages(arr);
     });
   }, [id]);
+  useEffect(() => {
+    if (data) {
+      setValues({
+        productId: data.id,
+        quantity: data.minOrder,
+        offerPrice: 0,
+        colors: undefined,
+        sizes: undefined,
+      });
+    }
+  }, [data]);
   const onShare = async () => {
     try {
       const result = await Share.share({
@@ -64,6 +92,68 @@ export default function ProductDetails() {
       }
     } catch (error) {
       Alert.alert(error.message);
+    }
+  };
+  const handleCouponCode = async () => {
+    if (!user) {
+      return router.push("/login");
+    }
+    dispatch(showLoader());
+    try {
+      const res = await getApi(
+        `/codes/verify-coupon-code?code=${coupon}&productId=${data.id}`,
+        user.token
+      );
+      setValues({ ...values, couponId: res.data.code.id });
+      dispatch(hideLoader());
+      toast.show({
+        title: "Offer added",
+      });
+    } catch (e) {
+      dispatch(hideLoader());
+      toast.show({
+        render: (id) => (
+          <InfoAlert
+            id={id}
+            title={"!Ops"}
+            isClosable={false}
+            variant={"solid"}
+            description={e.response.data.message}
+          />
+        ),
+      });
+    }
+  };
+  const addToCart = async (buy) => {
+    // dispatch(showLoader())
+    console.log(values);
+    if (!user) {
+      return router.push("/login");
+    }
+    if ((!values.colors && data.colors) || (!values.sizes && data.sizes)) {
+      return toast.show({
+        render: (id) => (
+          <InfoAlert
+            id={id}
+            title={"!Ops"}
+            isClosable={false}
+            variant={"solid"}
+            description={"Please select color and size"}
+          />
+        ),
+      });
+    }
+    try {
+      dispatch(showLoader());
+      await postApi("/cart/add", values, user.token);
+      dispatch(hideLoader());
+      toast.show({ title: "Added into Cart" });
+      if (buy) {
+        router.push("/user/myCart");
+      }
+    } catch (error) {
+      dispatch(hideLoader());
+      toast.show({ title: error.response.data.message });
     }
   };
 
@@ -102,6 +192,16 @@ export default function ProductDetails() {
             </Text>
           </View>
         </View>
+        {!data?.fixedPrice && (
+          <TextInput
+            value={values.offerPrice ? values.offerPrice.toString() : ""}
+            onChangeText={(e) =>
+              setValues({ ...values, offerPrice: parseInt(e) })
+            }
+            className="border rounded-lg px-2 py-1 my-2 border-[#048FB8]"
+            placeholder="What is your budget?"
+          />
+        )}
         <View className="flex flex-row items-center mt-2">
           <Avatar
             source={{
@@ -125,22 +225,42 @@ export default function ProductDetails() {
             <Text>Chat with Seller</Text>
           </TouchableOpacity>
         </View>
-        <Quantity data={data} />
-        <InputButton />
+        <Quantity
+          onChange={(e) => setValues({ ...values, quantity: e })}
+          data={data}
+        />
+        <Colors
+          onChangeColor={(e) => {
+            setValues({ ...values, colors: e });
+          }}
+          onChangeSize={(e) => {
+            setValues({ ...values, sizes: e });
+          }}
+          data={data}
+        />
+        <InputButton
+          onPress={handleCouponCode}
+          value={coupon}
+          onChange={(e) => setCoupon(e)}
+          disabled={coupon ? false : true}
+        />
         <View className="flex flex-row justify-between gap-4">
           <Button
+            onPress={() => addToCart(false)}
             style={{ width: width / 2 - 30 }}
             appearance={"outline"}
             children="Add to Cart"
           />
           <Button
+            onPress={() => addToCart(true)}
             style={{ width: width / 2 - 30 }}
             className="flex-1"
             children="Buy Now"
           />
         </View>
         <Review data={data} />
-        <RenderHTML ignoredDomTags={["font","colgroup"]}
+        <RenderHTML
+          ignoredDomTags={["font", "colgroup"]}
           contentWidth={width - 40}
           source={{ html: data.description }}
         />
