@@ -39,6 +39,7 @@ export default function MyCart() {
   const [checkOut, setCheckOut] = useState();
   const dispatch = useDispatch();
   const toast = useToast();
+  const [method, setMethod] = useState();
 
   useFocusEffect(() => {
     if (!user) {
@@ -250,7 +251,8 @@ export default function MyCart() {
             <Text className="font-semibold">Select Payment Method</Text>
             <Radio.Group
               name="exampleGroup"
-              defaultValue="1"
+              //defaultValue={method}
+              onChange={setMethod}
               accessibilityLabel="pick a size"
             >
               <Stack
@@ -265,19 +267,28 @@ export default function MyCart() {
                 space={4}
                 w="100%"
               >
-                <Radio value="1" colorScheme="yellow" size="sm" my={1}>
+                <Radio value="bkash" colorScheme="yellow" size="sm" my={1}>
                   Bkash
                 </Radio>
-                <Radio value="2" colorScheme="yellow" size="sm" my={1}>
+                <Radio value="amarpay" colorScheme="yellow" size="sm" my={1}>
                   AamarPay
                 </Radio>
-                <Radio value="3" colorScheme="yellow" size="sm" my={1}>
+                <Radio value="offline" colorScheme="yellow" size="sm" my={1}>
                   Cash on Delivery
                 </Radio>
-                <Radio w={"100%"} value="4" colorScheme="yellow" size="sm" my={1}>
+                <Radio
+                  w={"100%"}
+                  value="4"
+                  colorScheme="yellow"
+                  size="sm"
+                  my={1}
+                >
                   <View className="w-[80%]">
                     <Text className="font-semibold">Offline Payment</Text>
-                    <InputButton />
+                    <InputButton
+                      title={"Upload Screenshot"}
+                      placeholder={"Trnx ID"}
+                    />
                   </View>
                 </Radio>
               </Stack>
@@ -285,8 +296,46 @@ export default function MyCart() {
           </View>
           {checkOut ? (
             <Button
-              onPress={handleCheckOut}
-              isDisabled={data?.length > 0 ? false : true}
+              onPress={async () => {
+                if (!method) {
+                  return toast.show({
+                    title: "Select a payment method",
+                  });
+                }
+                try {
+                  dispatch(showLoader());
+                  const res = await postApi(
+                    "/order/create",
+                    {
+                      redirectUrl: "https://banglamartecommerce.com.bd",
+                      paymentMethod: method,
+                      token: checkOut.token,
+                    },
+                    user.token
+                  );
+                  dispatch(hideLoader());
+                  router.push({
+                    pathname: "/webview",
+                    params: {
+                      url: res.data.url,
+                      back: "https://banglamartecommerce.com.bd",
+                    },
+                  });
+                } catch (error) {
+                  dispatch(hideLoader());
+                  toast.show({
+                    render: (id) => (
+                      <InfoAlert
+                        id={id}
+                        title={"!Ops"}
+                        isClosable={false}
+                        variant={"solid"}
+                        description={error.response.data.message}
+                      />
+                    ),
+                  });
+                }
+              }}
               w="100%"
             >
               Confirm Order

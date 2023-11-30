@@ -46,10 +46,10 @@ export default function ProductDetails() {
     productId: "",
     quantity: 0,
     offerPrice: undefined,
-    colors: undefined,
-    sizes: undefined,
     couponId: undefined,
   });
+  const [colors,setColors]=useState()
+  const [sizes,setSizes]=useState()
   const [coupon, setCoupon] = useState();
   const dispatch = useDispatch();
 
@@ -67,13 +67,8 @@ export default function ProductDetails() {
   }, [id]);
   useEffect(() => {
     if (data) {
-      setValues({
-        productId: data.id,
-        quantity: data.minOrder,
-        offerPrice: 0,
-        colors: undefined,
-        sizes: undefined,
-      });
+      setValues({...values,quantity:data.minOrder});
+      
     }
   }, [data]);
   const onShare = async () => {
@@ -126,11 +121,11 @@ export default function ProductDetails() {
   };
   const addToCart = async (buy) => {
     // dispatch(showLoader())
-    console.log(values);
+    //console.log(values);
     if (!user) {
       return router.push("/login");
     }
-    if ((!values.colors && data.colors) || (!values.sizes && data.sizes)) {
+    if ((!colors && data.colors) || (!sizes && data.sizes)) {
       return toast.show({
         render: (id) => (
           <InfoAlert
@@ -145,17 +140,27 @@ export default function ProductDetails() {
     }
     try {
       dispatch(showLoader());
-      await postApi("/cart/add", values, user.token);
+      await postApi("/cart/add", {
+        productId:data.id,
+        couponId:values.couponId,
+        quantity:values.quantity,
+        offerPrice:values.offerPrice,
+        colors:colors,
+        sizes:sizes
+      }, user.token);
       dispatch(hideLoader());
       toast.show({ title: "Added into Cart" });
       if (buy) {
         router.push("/user/myCart");
+      }else{
+        router.back()
       }
     } catch (error) {
       dispatch(hideLoader());
       toast.show({ title: error.response.data.message });
     }
   };
+  
 
   if (!data) {
     return <Loader />;
@@ -229,12 +234,13 @@ export default function ProductDetails() {
           onChange={(e) => setValues({ ...values, quantity: e })}
           data={data}
         />
-        <Colors
+        <Colors colors={colors}
+        sizes={sizes}
           onChangeColor={(e) => {
-            setValues({ ...values, colors: e });
+           setColors(e)
           }}
           onChangeSize={(e) => {
-            setValues({ ...values, sizes: e });
+           setSizes(e)
           }}
           data={data}
         />

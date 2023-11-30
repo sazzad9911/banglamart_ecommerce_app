@@ -10,21 +10,38 @@ import {
 import { numberToArray } from "../../action";
 import Loader from "../components/main/Loader";
 import InputButton from "./InputButton";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoader, showLoader } from "../../reducers/loader";
 
 export default function Comments({ data }) {
   const [comments, setComments] = useState();
   const [reload, setReload] = useState(false);
   const [text, setText] = useState();
+  const user = useSelector((s) => s.user);
+  const dispatch=useDispatch()
   useEffect(() => {
     getApi(`/comment/get-by-product?productId=${data.id}`).then((res) => {
       setComments(res.data.data);
     });
-  }, [data]);
+  }, [data,reload]);
   const sendComment = () => {
-    const form = new FormData();
-    form.append("message", text);
-    form.append("productId", data.id);
-    postApi(`/comment/create`, form);
+    try {
+      dispatch(showLoader())
+      postApi(
+        `/comment/create`,
+        {
+          message: text,
+          productId: data.id,
+        },
+        user.token
+      );
+      setReload(d=>!d)
+      setText("")
+      dispatch(hideLoader())
+    } catch (error) {
+      dispatch(hideLoader())
+      console.error(error.message)
+    }
   };
   return (
     <View>
@@ -32,20 +49,19 @@ export default function Comments({ data }) {
         <Text className="text-lg my-2">Comments({comments?.length})</Text>
         <Feather name="chevron-right" size={24} color="black" />
       </View>
-      {comments?.slice(0,2).map((d, i) => (
+      {comments?.slice(0, 2).map((d, i) => (
         <Cart data={d} key={i} />
       ))}
       {!comments && <Loader />}
-      <View style={{height:12}}/>
+      <View style={{ height: 12 }} />
       <TextArea
         value={text}
         onChangeText={setText}
         multiline={true}
-        
         placeholder="Write comments"
       />
       <View className="flex flex-row justify-end mb-4 mt-3">
-        <Button title="Send" />
+        <Button onPress={sendComment} title="Send" />
       </View>
     </View>
   );

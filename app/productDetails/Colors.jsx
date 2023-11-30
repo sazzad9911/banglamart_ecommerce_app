@@ -4,14 +4,14 @@ import { Radio, VStack } from "native-base";
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function Colors({ data, onChangeColor,onChangeSize }) {
+export default function Colors({ data,colors,sizes, onChangeColor,onChangeSize }) {
   
   return (
     <View>
       {data.colors && (
         <View>
           <Text className="font-medium my-2">Select Color</Text>
-          <Radio.Group
+          <Radio.Group value={colors}
             name="myRadioGroup"
             accessibilityLabel="Pick your favorite number"
             onChange={(e) => {
@@ -42,7 +42,7 @@ export default function Colors({ data, onChangeColor,onChangeSize }) {
       {data.sizes && (
         <View>
           <Text className="font-medium my-2">Select Size</Text>
-          <Radio.Group
+          <Radio.Group value={sizes}
             name="myRadioGroup"
             accessibilityLabel="Pick your favorite number"
             onChange={(e) => {
