@@ -5,6 +5,7 @@ import { getData } from "../../../action";
 import { storeUser } from "../../../reducers/user";
 import { useFocusEffect } from "expo-router";
 import { hideLoader, showLoader } from "../../../reducers/loader";
+import socket from "../../../apis/socket";
 
 export default function Loader() {
   const loader = useSelector((s) => s.loader);
@@ -16,6 +17,12 @@ export default function Loader() {
     dispatch(showLoader())
     const d = await getData("USER");
     //console.log(d);
+    if(d){
+      socket.emit("join", {
+        user: d?.user,
+        id: socket.id,
+      });
+    }
     dispatch(hideLoader())
     dispatch(storeUser(d));
   };

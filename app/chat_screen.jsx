@@ -1,23 +1,27 @@
 import { View, Text, TextInput } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useEffect } from "react";
 import { Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { getApi, postApi, url } from "../apis";
+import { hideLoader, showLoader } from "../reducers/loader";
+import socket from "../apis/socket";
 
 export default function ChatScreen() {
   const user = useSelector((s) => s.user);
   const [messages, setMessages] = useState([]);
   const { id, receiver } = useLocalSearchParams();
-  const rec=JSON.parse(receiver)
+  const rec = JSON.parse(receiver);
+  const dispatch = useDispatch();
 
   useFocusEffect(() => {
     !user && router.push("/login");
   });
   useEffect(() => {
+    dispatch(showLoader());
     getApi(`/message/chats?conversationId=${id}`, user.token).then((res) => {
       //console.log(res.data);
       let arr = [];
@@ -28,8 +32,7 @@ export default function ChatScreen() {
           createdAt: new Date(d.date),
           user: {
             _id: d.receiverId == user.user.id ? rec?.id : user.user.id,
-            name:
-              d.receiverId == user.user.id ? rec?.name : user.user.name,
+            name: d.receiverId == user.user.id ? rec?.name : user.user.name,
             avatar:
               d.receiverId == user.user.id
                 ? `${url}${rec?.image}`
@@ -37,17 +40,36 @@ export default function ChatScreen() {
           },
         });
       });
+      dispatch(hideLoader());
       setMessages(arr);
+    });
+    socket.on("message", (e) => {
+      if (id === e.conversationId) {
+        setMessages((previousMessages) =>
+          GiftedChat.append(previousMessages, {
+            _id: e.id,
+            text: e.message,
+            createdAt: new Date(e.date),
+            user: {
+              _id: e.receiverId == user.user.id ? rec?.id : user.user.id,
+              name: e.receiverId == user.user.id ? rec?.name : user.user.name,
+              avatar:
+                e.receiverId == user.user.id
+                  ? `${url}${rec?.image}`
+                  : `${url}${user.user.image}`,
+            },
+          })
+        );
+      }
     });
   }, []);
   const onSend = useCallback((messages = []) => {
-    setMessages((previousMessages) =>
-      GiftedChat.append(previousMessages, messages)
-    );
+    // setMessages((previousMessages) =>
+    //   GiftedChat.append(previousMessages, messages)
+    // );
     send(messages);
   }, []);
   const send = async (val) => {
-  
     try {
       await postApi(
         "/message/send",

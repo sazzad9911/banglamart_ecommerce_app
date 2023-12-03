@@ -15,7 +15,10 @@ export default function Messages() {
   const [data, setData] = useState([]);
 
   useFocusEffect(() => {
-    !user && router.push("/login");
+   
+    if(!user){
+      return router.push("/login");
+    }
     getApi("/message/get", user.token).then((response) => {
       setData(response.data.data);
       

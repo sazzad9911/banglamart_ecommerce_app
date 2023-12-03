@@ -48,8 +48,8 @@ export default function ProductDetails() {
     offerPrice: undefined,
     couponId: undefined,
   });
-  const [colors,setColors]=useState()
-  const [sizes,setSizes]=useState()
+  const [colors, setColors] = useState();
+  const [sizes, setSizes] = useState();
   const [coupon, setCoupon] = useState();
   const dispatch = useDispatch();
 
@@ -67,8 +67,7 @@ export default function ProductDetails() {
   }, [id]);
   useEffect(() => {
     if (data) {
-      setValues({...values,quantity:data.minOrder});
-      
+      setValues({ ...values, quantity: data.minOrder });
     }
   }, [data]);
   const onShare = async () => {
@@ -140,27 +139,57 @@ export default function ProductDetails() {
     }
     try {
       dispatch(showLoader());
-      await postApi("/cart/add", {
-        productId:data.id,
-        couponId:values.couponId,
-        quantity:values.quantity,
-        offerPrice:values.offerPrice,
-        colors:colors,
-        sizes:sizes
-      }, user.token);
+      await postApi(
+        "/cart/add",
+        {
+          productId: data.id,
+          couponId: values.couponId,
+          quantity: values.quantity,
+          offerPrice: values.offerPrice,
+          colors: colors,
+          sizes: sizes,
+        },
+        user.token
+      );
       dispatch(hideLoader());
       toast.show({ title: "Added into Cart" });
       if (buy) {
         router.push("/user/myCart");
-      }else{
-        router.back()
+      } else {
+        router.back();
       }
     } catch (error) {
       dispatch(hideLoader());
       toast.show({ title: error.response.data.message });
     }
   };
-  
+  const onMessage = async (userId) => {
+    try {
+      dispatch(showLoader());
+      const d = await postApi(
+        "/message/create",
+        {
+          userId: userId,
+          productId: id,
+        },
+        user.token
+      );
+      //console.log(d.data);
+      dispatch(hideLoader());
+      router.push({
+        pathname: "/chat_screen",
+        params: {
+          id: d.data.data.id,
+          receiver: JSON.stringify(d.data.data.receiver),
+        },
+      });
+    } catch (error) {
+      dispatch(hideLoader());
+      toast.show({
+        title: error.response.data.message,
+      });
+    }
+  };
 
   if (!data) {
     return <Loader />;
@@ -221,7 +250,13 @@ export default function ProductDetails() {
               {data.seller ? data.seller.shopName : data.brand.brandName}
             </Text>
           </View>
-          <TouchableOpacity className="ml-4 ">
+          <TouchableOpacity
+            onPress={() => {
+              //console.log(data.userId);
+              onMessage(data.userId);
+            }}
+            className="ml-4 "
+          >
             <MaterialCommunityIcons
               name="message-arrow-right"
               size={24}
@@ -234,13 +269,14 @@ export default function ProductDetails() {
           onChange={(e) => setValues({ ...values, quantity: e })}
           data={data}
         />
-        <Colors colors={colors}
-        sizes={sizes}
+        <Colors
+          colors={colors}
+          sizes={sizes}
           onChangeColor={(e) => {
-           setColors(e)
+            setColors(e);
           }}
           onChangeSize={(e) => {
-           setSizes(e)
+            setSizes(e);
           }}
           data={data}
         />
