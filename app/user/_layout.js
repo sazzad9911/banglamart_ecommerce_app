@@ -26,14 +26,14 @@ export default function Layout() {
         name="notification"
         options={{
           href: "/user/notification",
-          header: (props) => <Header title="Notification" {...props} />,
+          header: (props) => <Head title="Notification" {...props} />,
         }}
       />
       <Tabs.Screen
         name="messages"
         options={{
           href: "/user/messages",
-          header: (props) => <Header title="Messages" {...props} />,
+          header: (props) => <Head title="Messages" {...props} />,
         }}
       />
       <Tabs.Screen

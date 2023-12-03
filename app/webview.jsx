@@ -25,10 +25,12 @@ export default function Webview() {
         dispatch(hideLoader())
       }}
       onNavigationStateChange={e=>{
-        console.log(e.url);
-        console.log(back);
+        //console.log(e.url);
+        //console.log(back);
         if(e.url===back){
+          dispatch(hideLoader())
           router.back()
+          
         }
       }}
       style={{

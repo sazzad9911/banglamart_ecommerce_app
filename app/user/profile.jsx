@@ -46,7 +46,7 @@ export default function Profile() {
         }}
       >
         <View className="mt-4" />
-        <Avatar onPress={async()=>{
+        <Avatar editable={true} onPress={async()=>{
           try {
             const res=await pickImage()
             console.log(res);

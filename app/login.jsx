@@ -45,7 +45,7 @@ export default function Login() {
   });
 
   const onSubmit = async () => {
-    dispatch(showLoader())
+    dispatch(showLoader());
     try {
       if (checked === "phone") {
         const val = await phoneSchema.validate(values);
@@ -70,9 +70,9 @@ export default function Login() {
         //   dispatch(storeUser(e.data))
         // })
         dispatch(storeUser(res.data));
-        await storeData("USER",res.data)
+        await storeData("USER", res.data);
         router.replace("/user");
-        dispatch(hideLoader())
+        dispatch(hideLoader());
         return;
       }
       const val = await formSchema.validate(values);
@@ -80,10 +80,24 @@ export default function Login() {
         email: val.email,
         password: val.password,
       });
-      await storeData("USER",res.data)
+      if (res.data.user.role != 1) {
+        dispatch(hideLoader());
+        toast.show({
+          render: (id) => (
+            <InfoAlert
+              id={id}
+              title={"!Ops"}
+              isClosable={false}
+              variant={"solid"}
+              description={"User is invalid"}
+            />
+          ),
+        });
+      }
+      await storeData("USER", res.data);
       dispatch(storeUser(res.data));
-      router.replace("/user");
-      dispatch(hideLoader())
+      router.back();
+      dispatch(hideLoader());
       // }).catch(err=>{
       //   toast.show({
       //     render: (id) => (
@@ -101,7 +115,7 @@ export default function Login() {
       // })
     } catch (e) {
       // console.log(e.code);
-      dispatch(hideLoader())
+      dispatch(hideLoader());
       const val = e?.code?.match("ERR_BAD_REQUEST");
       toast.show({
         render: (id) => (
@@ -178,7 +192,7 @@ export default function Login() {
           >
             <Text style={styles.forgot_button}>Forgot Password?</Text>
           </TouchableOpacity>
-          
+
           <TouchableOpacity onPress={onSubmit} style={styles.loginBtn}>
             <Text style={styles.loginText}>LOGIN</Text>
           </TouchableOpacity>

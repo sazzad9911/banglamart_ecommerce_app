@@ -5,7 +5,7 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Redirect, router, useFocusEffect } from "expo-router";
 import { useState } from "react";
@@ -50,6 +50,17 @@ export default function MyCart() {
       //console.log(response.data.data);
     });
   });
+  useEffect(() => {
+    setCheckOut("");
+    setCodesData({
+      promoCode: "",
+      memberCode: "",
+    });
+    setCodes({
+      promoCode: "",
+      memberCode: "",
+    });
+  }, [data]);
   const applyPromoCode = async () => {
     dispatch(showLoader());
     try {
@@ -318,7 +329,7 @@ export default function MyCart() {
                     pathname: "/webview",
                     params: {
                       url: res.data.url,
-                      back: "https://banglamartecommerce.com.bd",
+                      back: "https://banglamartecommerce.com.bd/",
                     },
                   });
                 } catch (error) {

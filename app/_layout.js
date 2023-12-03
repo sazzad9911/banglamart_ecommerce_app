@@ -110,6 +110,13 @@ export default function Layout() {
                 header: (props) => <Header title="Order List" {...props} />,
               }}
             />
+            <Stack.Screen
+              name="chat_screen"
+              options={{
+                href: "/chat_screen",
+                header: (props) => <Header title="Messages" {...props} />,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
         <Loader />
