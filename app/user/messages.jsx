@@ -1,6 +1,6 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
 import React, { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { router, useFocusEffect } from "expo-router";
 import { GiftedChat } from "react-native-gifted-chat";
 import { useEffect } from "react";
@@ -9,10 +9,12 @@ import { getApi, url } from "../../apis";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { VStack } from "native-base";
 import Avatar from "../components/main/Avatar";
+import deliverData, { storeDeliver } from "../../reducers/dataDeliver";
 
 export default function Messages() {
   const user = useSelector((s) => s.user);
   const [data, setData] = useState();
+  const dispatch=useDispatch()
 
   useFocusEffect(() => {
    
@@ -36,15 +38,11 @@ export default function Messages() {
         {data?.map((d, i) => (
           <Cart
             onPress={() => {
+              dispatch(storeDeliver(d.receiver))
               router.push({
                 pathname: "/chat_screen",
                 params: {
                   id: d.id,
-                 receiver:JSON.stringify({
-                  id:d.receiver.id,
-                 // name:d.receiver.name,
-                  //image:d.receiver.image
-                 })
                 },
               });
             }}

@@ -3,14 +3,16 @@ import React from "react";
 import ProductCart from "./components/products/ProductCart";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
+import { useSelector } from "react-redux";
+import Header from "./components/Header";
 
 export default function See_more() {
-    const {data}=useLocalSearchParams()
-    const values=null;
-    console.log(data);
+   const values=useSelector(s=>s.deliverData)
+   const {name}=useLocalSearchParams()
     //console.log(JSON.parse(data)); 
   return (
     <View style={{ flex: 1 }}>
+        <Header title={name}/>
       <ScrollView>
         <View className="flex flex-row flex-wrap px-5 py-2 justify-center bg-gray-100">
           {values?.map((data, i) => (

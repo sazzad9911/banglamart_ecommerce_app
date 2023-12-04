@@ -35,6 +35,7 @@ import Colors from "./Colors";
 import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../../reducers/loader";
 import InfoAlert from "../components/main/InfoAlert";
+import { storeDeliver } from "../../reducers/dataDeliver";
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams();
@@ -176,12 +177,11 @@ export default function ProductDetails() {
       );
       //console.log(d.data);
       dispatch(hideLoader());
-      
+      dispatch(storeDeliver(d.data.data.receiver))
       router.push({
         pathname: "/chat_screen",
         params: {
           id: d.data.data.id,
-          receiver: JSON.stringify(d.data.data.receiver),
         },
       });
     } catch (error) {

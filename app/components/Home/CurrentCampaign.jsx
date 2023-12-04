@@ -6,10 +6,13 @@ import { ScrollView } from "react-native-gesture-handler";
 import ProductCart from "../products/ProductCart";
 import { AntDesign } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { useDispatch } from "react-redux";
+import { storeDeliver } from "../../../reducers/dataDeliver";
 
 export default function CurrentCampaign() {
   const [data, setData] = useState();
   const [products, setProducts] = useState();
+  const dispatch=useDispatch()
   useEffect(() => {
     getApi("/campaign/current").then(async (res) => {
       (res.data.data.length > 0) & setData(res.data.data[0]);
@@ -37,12 +40,17 @@ export default function CurrentCampaign() {
           source={{ uri: `${url}${data?.image}` }}
         />
         <AntDesign onPress={()=>{
-         let d=JSON.stringify(products)
+         
+         let arr=[]
+         products.map(d=>{
+          arr.push(d.product)
+         })
+         dispatch(storeDeliver(arr))
           router.push({
             pathname:"/see_more",
             params:{
-              data:products?JSON.stringify(products):null
-            },
+              name:"Campaign Products"
+            }
           })
         }} name="rightcircle" size={24} color="black" />
       </View>

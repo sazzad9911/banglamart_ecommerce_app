@@ -13,12 +13,12 @@ import socket from "../apis/socket";
 export default function ChatScreen() {
   const user = useSelector((s) => s.user);
   const [messages, setMessages] = useState([]);
-  const { id,receiver } = useLocalSearchParams();
-  const rec = JSON?.parse(receiver||null)
+  const { id } = useLocalSearchParams();
+  const rec = useSelector(s=>s.deliverData)
   const dispatch = useDispatch();
   useFocusEffect(() => {
     !user && router.push("/login");
-    console.log(rec);
+    //console.log(rec);
   });
   useEffect(() => {
     dispatch(showLoader());
@@ -41,7 +41,7 @@ export default function ChatScreen() {
         });
       });
       dispatch(hideLoader());
-      setMessages(arr);
+      setMessages(arr.reverse());
     }).catch(e=>{
       dispatch(hideLoader());
       console.error(e.response.data.message);
@@ -91,7 +91,7 @@ export default function ChatScreen() {
 
   return (
     <View style={{ flex: 1 }}>
-      <GiftedChat
+      <GiftedChat 
         messages={messages}
         onSend={(m) => {
           onSend(m);

@@ -124,6 +124,13 @@ export default function Layout() {
                 headerShown: false,
               }}
             />
+            <Stack.Screen
+              name="see_more"
+              options={{
+                href: "/see_more",
+                headerShown: false,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
         <Loader />
