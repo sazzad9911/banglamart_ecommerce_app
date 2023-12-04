@@ -41,6 +41,7 @@ export default function MyCart() {
   const dispatch = useDispatch();
   const toast = useToast();
   const [method, setMethod] = useState();
+  const [tranXId,setTranXId]=useState()
 
   useFocusEffect(() => {
     if (!user) {
@@ -49,7 +50,6 @@ export default function MyCart() {
       getApi("/cart/get", user.token).then((response) => {
         setData(response.data.data);
         //console.log(response.data.data);
-       
       });
     }
   });
@@ -166,7 +166,7 @@ export default function MyCart() {
         <VStack space={3} alignItems="center">
           <View />
           {data?.map((data, i) => (
-            <MyNewCart onChange={()=>setCheckOut("")} data={data} key={i} />
+            <MyNewCart onChange={() => setCheckOut("")} data={data} key={i} />
           ))}
           {data?.length == 0 ? (
             <View className="flex-1 items-center justify-center h-[60vh]">
@@ -280,7 +280,23 @@ export default function MyCart() {
                 title={"Cash On Delivery"}
                 onChange={() => setMethod("offline")}
               />
+              <RadioButton
+                value={method === "bkash_offline" ? true : false}
+                title={"Bkash Offline"}
+                onChange={() => setMethod("bkash_offline")}
+              />
             </Stack>
+            {method === "bkash_offline" && (
+              <View className="my-1 bg-white px-2 py-3 rounded-md">
+                <Text>বিকাশে পেমেন্ট করুন ০১৭১৩৩৩৭৮২৫</Text>
+                <InputButton disabled={tranXId?false:true} onPress={()=>{
+                  toast.show({
+                    title:"Transaction ID Taken",
+                    
+                  })
+                }} onChange={setTranXId} value={tranXId} placeholder={"Trnx ID"} title={"Apply"} />
+              </View>
+            )}
           </View>
           {checkOut ? (
             <Button
@@ -288,6 +304,11 @@ export default function MyCart() {
                 if (!method) {
                   return toast.show({
                     title: "Select a payment method",
+                  });
+                }
+                if(method==="bkash_offline"&&!tranXId){
+                  return toast.show({
+                    title: "Please Give Transaction ID",
                   });
                 }
                 try {
@@ -298,6 +319,7 @@ export default function MyCart() {
                       redirectUrl: "https://banglamartecommerce.com.bd",
                       paymentMethod: method,
                       token: checkOut.token,
+                      //transactionId:tranXId
                     },
                     user.token
                   );

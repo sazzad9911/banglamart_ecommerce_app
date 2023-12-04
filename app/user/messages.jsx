@@ -12,7 +12,7 @@ import Avatar from "../components/main/Avatar";
 
 export default function Messages() {
   const user = useSelector((s) => s.user);
-  const [data, setData] = useState([]);
+  const [data, setData] = useState();
 
   useFocusEffect(() => {
    
@@ -40,7 +40,11 @@ export default function Messages() {
                 pathname: "/chat_screen",
                 params: {
                   id: d.id,
-                  receiver:JSON.stringify(d.receiver)
+                 receiver:JSON.stringify({
+                  id:d.receiver.id,
+                 // name:d.receiver.name,
+                  //image:d.receiver.image
+                 })
                 },
               });
             }}

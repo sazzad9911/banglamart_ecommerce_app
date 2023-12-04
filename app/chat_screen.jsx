@@ -13,16 +13,16 @@ import socket from "../apis/socket";
 export default function ChatScreen() {
   const user = useSelector((s) => s.user);
   const [messages, setMessages] = useState([]);
-  const { id, receiver } = useLocalSearchParams();
-  const rec = JSON.parse(receiver);
+  const { id,receiver } = useLocalSearchParams();
+  const rec = JSON?.parse(receiver||null)
   const dispatch = useDispatch();
-
   useFocusEffect(() => {
     !user && router.push("/login");
+    console.log(rec);
   });
   useEffect(() => {
     dispatch(showLoader());
-    getApi(`/message/chats?conversationId=${id}`, user.token).then((res) => {
+    getApi(`/message/chats?conversationId=${id}`, user?.token).then((res) => {
       //console.log(res.data);
       let arr = [];
       res.data.data.map((d) => {
@@ -42,7 +42,10 @@ export default function ChatScreen() {
       });
       dispatch(hideLoader());
       setMessages(arr);
-    });
+    }).catch(e=>{
+      dispatch(hideLoader());
+      console.error(e.response.data.message);
+    })
     socket.on("message", (e) => {
       if (id === e.conversationId) {
         setMessages((previousMessages) =>
@@ -70,6 +73,7 @@ export default function ChatScreen() {
     send(messages);
   }, []);
   const send = async (val) => {
+    
     try {
       await postApi(
         "/message/send",

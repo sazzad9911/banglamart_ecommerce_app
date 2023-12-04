@@ -5,9 +5,11 @@ import {
   Image,
   ActivityIndicator,
   ImageBackground,
+  TouchableOpacity,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getApi, url } from "../../../apis";
+import { router } from "expo-router";
 
 export default function Categories() {
   const [categories, setCategories] = useState();
@@ -22,7 +24,15 @@ export default function Categories() {
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View className="w-[15]" />
         {categories?.map((category) => (
-          <Cart key={category.id} data={category} />
+          <Cart onPress={()=>{
+            router.push({
+              pathname:"/category",
+              params:{
+                id:category.id,
+                name:category.name
+              }
+            })
+          }} key={category.id} data={category} />
         ))}
         <View className="w-[15]" />
         {!categories && (
@@ -34,17 +44,21 @@ export default function Categories() {
     </View>
   );
 }
-const Cart = ({ data }) => {
+const Cart = ({ data, onPress }) => {
   return (
-    <ImageBackground
-      source={{
-        uri: `${url}${data.icon}`,
-      }}
-      className="w-[80px] h-[80px] mx-[5] rounded-md overflow-hidden justify-end"
-    >
-      <View className=" items-center  bg-[#02020260] p-1">
-        <Text numberOfLines={2} className="text-white font-extrabold text-xs">{data.name}</Text>
-      </View>
-    </ImageBackground>
+    <TouchableOpacity onPress={onPress}>
+      <ImageBackground
+        source={{
+          uri: `${url}${data.icon}`,
+        }}
+        className="w-[80px] h-[80px] mx-[5] rounded-md overflow-hidden justify-end"
+      >
+        <View className=" items-center  bg-[#02020260] p-1">
+          <Text numberOfLines={2} className="text-white font-extrabold text-xs">
+            {data.name}
+          </Text>
+        </View>
+      </ImageBackground>
+    </TouchableOpacity>
   );
 };

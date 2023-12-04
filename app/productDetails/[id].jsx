@@ -176,6 +176,7 @@ export default function ProductDetails() {
       );
       //console.log(d.data);
       dispatch(hideLoader());
+      
       router.push({
         pathname: "/chat_screen",
         params: {
@@ -327,7 +328,11 @@ const ImageView = ({ images }) => {
         style={{ height: width - 108 }}
         className="w-[60] ml-2 items-center"
       >
-        <ScrollView nestedScrollEnabled={true} style={{flex:1}} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          nestedScrollEnabled={true}
+          style={{ flex: 1 }}
+          showsVerticalScrollIndicator={false}
+        >
           {images?.map((d, i) => (
             <TouchableOpacity
               className={` ${i === index && "border border-red-300"} my-1`}

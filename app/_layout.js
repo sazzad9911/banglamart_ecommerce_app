@@ -117,6 +117,13 @@ export default function Layout() {
                 header: (props) => <Header title="Messages" {...props} />,
               }}
             />
+             <Stack.Screen
+              name="category"
+              options={{
+                href: "/category",
+                headerShown: false,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
         <Loader />

@@ -5,6 +5,7 @@ import Loader from "../Loader";
 import { ScrollView } from "react-native-gesture-handler";
 import ProductCart from "../products/ProductCart";
 import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 export default function CurrentCampaign() {
   const [data, setData] = useState();
@@ -35,12 +36,20 @@ export default function CurrentCampaign() {
           className="absolute top-0 left-0"
           source={{ uri: `${url}${data?.image}` }}
         />
-        <AntDesign name="rightcircle" size={24} color="black" />
+        <AntDesign onPress={()=>{
+         let d=JSON.stringify(products)
+          router.push({
+            pathname:"/see_more",
+            params:{
+              data:products?JSON.stringify(products):null
+            },
+          })
+        }} name="rightcircle" size={24} color="black" />
       </View>
       <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
         <View className="w-[15]" />
         {products?.slice(0, 10).map((product) => (
-          <ProductCart
+          <ProductCart 
             data={product.product}
             offers={product}
             key={product.id}
