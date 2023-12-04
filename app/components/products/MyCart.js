@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { hideLoader, showLoader } from "../../../reducers/loader";
 
-export default function MyNewCart({ data }) {
+export default function MyNewCart({ data,onChange }) {
   const [quantity, setQuantity] = useState(data?.product.minOrder);
   const user = useSelector((s) => s.user);
   const dispatch=useDispatch()
@@ -22,6 +22,7 @@ export default function MyNewCart({ data }) {
         },
         user.token
       );
+      onChange&&onChange()
       dispatch(hideLoader())
     } catch (error) {
       dispatch(hideLoader())
@@ -35,6 +36,7 @@ export default function MyNewCart({ data }) {
         `/cart/delete?cartId=${id}`,
         user.token
       );
+      onChange&&onChange()
       dispatch(hideLoader())
     } catch (error) {
       dispatch(hideLoader())

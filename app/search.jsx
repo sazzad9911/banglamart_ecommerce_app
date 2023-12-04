@@ -1,4 +1,4 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Ionicons, SimpleLineIcons } from "@expo/vector-icons";
 import { Link, usePathname, useRouter } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import React, {
@@ -14,6 +14,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  Text,
   TextInput,
   View,
 } from "react-native";
@@ -23,6 +24,9 @@ import BottomSheet, { BottomSheetScrollView } from "@gorhom/bottom-sheet";
 import { getApi } from "../apis";
 import ProductCart from "./components/products/ProductCart";
 import Loader from "./components/Loader";
+import { useDispatch } from "react-redux";
+import { hideLoader, showLoader } from "../reducers/loader";
+import { Stack } from "native-base";
 
 export default function Search() {
   const inset = useSafeAreaInsets();
@@ -31,8 +35,14 @@ export default function Search() {
   const [query, setQuery] = useState("");
   const [data, setData] = useState();
   const [filter, setFilter] = useState();
-  const [low, setLow] = useState();
-  const [high, setHigh] = useState();
+  const [low, setLow] = useState("");
+  const [high, setHigh] = useState("");
+  const dispatch = useDispatch();
+  const [page, setPage] = useState(1);
+  const [endKey, setKey] = useState(false);
+  const [seller,setSeller]=useState("")
+  const [brand,setBrand]=useState("")
+  const [color,setColor]=useState("")
 
   const bottomSheetRef = useRef(null);
 
@@ -45,16 +55,25 @@ export default function Search() {
     setIndex(index);
   }, []);
   useEffect(() => {
-    getApi(`/product/search?query=${query}&page=1&perPage=20`).then((res) => {
-      setData(res.data.data);
-    });
-  }, [query]);
+    dispatch(showLoader());
+    getApi(`/product/search?query=${query}&page=${page}&perPage=20
+    &byPriceFrom=${low?low:""}&byPriceTo=${high?high:""}&byBrad=${brand?brand:""}&bySeller=${seller}&byColor=${color}`).then(
+      (res) => {
+        setData(res.data.data);
+        dispatch(hideLoader());
+      }
+    ).catch(e=>{
+      console.error(e.response.data.message)
+    })
+  }, [endKey,low,high,seller,brand,color]);
   useEffect(() => {
+    dispatch(showLoader());
     getApi(`/product/searchFilter?query=${query}`).then((res) => {
       //console.log(res.data);
       setFilter(res.data);
+      dispatch(hideLoader());
     });
-  }, [query]);
+  }, [endKey,low,high]);
   if (!data || !filter) {
     return <Loader />;
   }
@@ -76,8 +95,12 @@ export default function Search() {
           <TextInput
             onChangeText={setQuery}
             value={query}
+            onEndEditing={() => {
+              setKey((c) => !c);
+            }}
             className="flex-1 h-full"
             placeholder="Search here..."
+            returnKeyType="search"
           />
           <AntDesign name="search1" size={24} color={"gray"} />
         </Pressable>
@@ -85,15 +108,39 @@ export default function Search() {
           <Ionicons name="filter-sharp" size={24} color="black" />
         </Pressable>
       </View>
-      <ScrollView>
-        <View style={{
-          flexDirection:"row",
-          flexWrap:"wrap",
-          marginHorizontal:20,
-        }}>
+      <ScrollView onTouchEnd={()=>{
+        dispatch(showLoader());
+        getApi(`/product/search?query=${query}&page=${page+1}&perPage=10
+        &byPriceFrom=${low?low:""}&byPriceTo=${high?high:""}&byBrad=${brand?brand:""}&bySeller=${seller}&byColor=${color}`).then(
+          (res) => {
+            setData(d=>[...d,res.data.data]);
+            setPage(page+1)
+            dispatch(hideLoader());
+          }
+        ).catch(e=>{
+          console.error(e.response.data.message)
+        })
+      }}>
+        <View className="flex flex-row flex-wrap px-5 justify-center bg-gray-50"
+        >
           {data?.map((data, i) => (
-            <ProductCart style={{marginVertical:5,width:Dimensions.get("window").width/2-30}} data={data} key={i} />
+            <ProductCart
+              style={{
+                marginVertical:5,
+                width: Dimensions.get("window").width / 2 - 30,
+                marginHorizontal:5,
+                
+              }}
+              data={data}
+              key={i}
+            />
           ))}
+          {data?.length == 0 ? (
+            <View className="flex-1 items-center justify-center h-[60vh]">
+              <SimpleLineIcons name="info" size={24} color="black" />
+              <Text className="my-2 font-bold">Try Something Else</Text>
+            </View>
+          ) : null}
         </View>
       </ScrollView>
       <BottomSheet
@@ -114,6 +161,12 @@ export default function Search() {
             sizes={filter.size}
             min={filter.minPrice}
             max={filter.maxPrice}
+            color={color}
+            onChangeColor={setColor}
+            brand={brand}
+            onChangeBrand={e=>setBrand(e)}
+            seller={seller}
+            onChangeSeller={setSeller}
           />
         </BottomSheetScrollView>
       </BottomSheet>

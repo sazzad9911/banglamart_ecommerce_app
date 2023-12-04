@@ -24,6 +24,7 @@ import MyNewCart from "../components/products/MyCart";
 import InputButton from "../productDetails/InputButton";
 import { hideLoader, showLoader } from "../../reducers/loader";
 import InfoAlert from "../components/main/InfoAlert";
+import RadioButton from "../components/main/RadioButton";
 
 export default function MyCart() {
   const user = useSelector((s) => s.user);
@@ -44,23 +45,17 @@ export default function MyCart() {
   useFocusEffect(() => {
     if (!user) {
       return router.push("/login");
+    } else {
+      getApi("/cart/get", user.token).then((response) => {
+        setData(response.data.data);
+        //console.log(response.data.data);
+       
+      });
     }
-    getApi("/cart/get", user.token).then((response) => {
-      setData(response.data.data);
-      //console.log(response.data.data);
-    });
   });
-  useEffect(() => {
-    setCheckOut("");
-    setCodesData({
-      promoCode: "",
-      memberCode: "",
-    });
-    setCodes({
-      promoCode: "",
-      memberCode: "",
-    });
-  }, [data]);
+  // useEffect(() => {
+
+  // }, [data]);
   const applyPromoCode = async () => {
     dispatch(showLoader());
     try {
@@ -70,6 +65,7 @@ export default function MyCart() {
       );
       setCodesData({ ...codesData, promoCode: res.data.code });
       dispatch(hideLoader());
+      setCheckOut("");
     } catch (e) {
       dispatch(hideLoader());
       toast.show({
@@ -94,6 +90,7 @@ export default function MyCart() {
       );
       setCodesData({ ...codesData, memberCode: res.data.code });
       dispatch(hideLoader());
+      setCheckOut("");
     } catch (e) {
       dispatch(hideLoader());
       toast.show({
@@ -134,7 +131,7 @@ export default function MyCart() {
         `/order/check-out`,
         {
           cartIds: ids,
-          address: user.user.address,
+          address: user?.user.address,
           specialCodeId: codesData.memberCode
             ? codesData.memberCode.id
             : undefined,
@@ -169,7 +166,7 @@ export default function MyCart() {
         <VStack space={3} alignItems="center">
           <View />
           {data?.map((data, i) => (
-            <MyNewCart data={data} key={i} />
+            <MyNewCart onChange={()=>setCheckOut("")} data={data} key={i} />
           ))}
           {data?.length == 0 ? (
             <View className="flex-1 items-center justify-center h-[60vh]">
@@ -208,17 +205,17 @@ export default function MyCart() {
           </View>
           <View className="w-full">
             <Text className="font-semibold">Delivery Information</Text>
-            {user.user.address ? (
+            {user?.user.address ? (
               <Text>
-                Address: {user.user.address?.division},{" "}
-                {user.user.address?.district}, {user.user.address?.subDistrict},{" "}
-                {user.user.address?.union}
+                Address: {user?.user.address?.division},{" "}
+                {user?.user.address?.district},{" "}
+                {user?.user.address?.subDistrict}, {user?.user.address?.union}
               </Text>
             ) : (
               <Text>Address: N/A</Text>
             )}
-            {user.user.phone ? (
-              <Text>Phone: {user.user.phone}</Text>
+            {user?.user.phone ? (
+              <Text>Phone: {user?.user.phone}</Text>
             ) : (
               <Text>Phone: N/A</Text>
             )}
@@ -260,50 +257,30 @@ export default function MyCart() {
           </View>
           <View className="w-full ">
             <Text className="font-semibold">Select Payment Method</Text>
-            <Radio.Group
-              name="exampleGroup"
-              //defaultValue={method}
-              onChange={setMethod}
-              accessibilityLabel="pick a size"
+
+            <Stack
+              space={3}
+              flexWrap={"wrap"}
+              direction={{
+                base: "row",
+              }}
             >
-              <Stack
-                direction={{
-                  base: "row",
-                }}
-                flexWrap={"wrap"}
-                alignItems={{
-                  base: "flex-start",
-                  md: "center",
-                }}
-                space={4}
-                w="100%"
-              >
-                <Radio value="bkash" colorScheme="yellow" size="sm" my={1}>
-                  Bkash
-                </Radio>
-                <Radio value="amarpay" colorScheme="yellow" size="sm" my={1}>
-                  AamarPay
-                </Radio>
-                <Radio value="offline" colorScheme="yellow" size="sm" my={1}>
-                  Cash on Delivery
-                </Radio>
-                <Radio
-                  w={"100%"}
-                  value="4"
-                  colorScheme="yellow"
-                  size="sm"
-                  my={1}
-                >
-                  <View className="w-[80%]">
-                    <Text className="font-semibold">Offline Payment</Text>
-                    <InputButton
-                      title={"Upload Screenshot"}
-                      placeholder={"Trnx ID"}
-                    />
-                  </View>
-                </Radio>
-              </Stack>
-            </Radio.Group>
+              <RadioButton
+                value={method === "bkash" ? true : false}
+                title={"Bkash"}
+                onChange={() => setMethod("bkash")}
+              />
+              <RadioButton
+                value={method === "amarpay" ? true : false}
+                title={"aAmar Pay"}
+                onChange={() => setMethod("amarpay")}
+              />
+              <RadioButton
+                value={method === "offline" ? true : false}
+                title={"Cash On Delivery"}
+                onChange={() => setMethod("offline")}
+              />
+            </Stack>
           </View>
           {checkOut ? (
             <Button
@@ -324,6 +301,15 @@ export default function MyCart() {
                     },
                     user.token
                   );
+                  setCheckOut("");
+                  setCodesData({
+                    promoCode: "",
+                    memberCode: "",
+                  });
+                  setCodes({
+                    promoCode: "",
+                    memberCode: "",
+                  });
                   dispatch(hideLoader());
                   router.push({
                     pathname: "/webview",

@@ -14,9 +14,16 @@ export default function Filter({
   brands,
   colors,
   sizes,
+  brand,
+  color,
+  seller,
+  onChangeSeller,
+  onChangeBrand,
+  onChangeColor,
 }) {
   const [low, setLow] = useState(0);
   const [hight, setHigh] = useState(100);
+  console.log(brand);
 
   const handleValueChange = useCallback((low, high) => {
     setLow(low);
@@ -39,7 +46,12 @@ export default function Filter({
         <Cart
           data={sellers}
           Children={(e) => (
-            <RadioButton key={e.data.id} title={e.data.shopName} />
+            <RadioButton
+              value={e.data.id == seller ? true : false}
+              onChange={() => onChangeSeller && onChangeSeller(seller==e.data.id?"":e.data.id)}
+              key={e.data.id}
+              title={e.data.shopName}
+            />
           )}
           title={"Seller"}
         />
@@ -48,7 +60,12 @@ export default function Filter({
         <Cart
           data={brands}
           Children={(e) => (
-            <RadioButton key={e.data.id} title={e.data.brandName} />
+            <RadioButton
+              value={e.data.id == brand ? true : false}
+              onChange={() => onChangeBrand && onChangeBrand(brand==e.data.id?"":e.data.id)}
+              key={e.data.id}
+              title={e.data.brandName}
+            />
           )}
           title={"Brand"}
         />
@@ -56,7 +73,14 @@ export default function Filter({
       {colors?.length > 0 && (
         <Cart
           data={colors}
-          Children={(e) => <RadioButton key={e.data.id} title={e.data.label} />}
+          Children={(e) => (
+            <RadioButton
+              value={e.data.label == color ? true : false}
+              onChange={() => onChangeColor && onChangeColor(color==e.data.label?"":e.data.label)}
+              key={e.data.id}
+              title={e.data.label}
+            />
+          )}
           title={"Colors"}
         />
       )}

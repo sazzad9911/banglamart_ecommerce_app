@@ -195,7 +195,7 @@ export default function ProductDetails() {
     return <Loader />;
   }
   return (
-    <ScrollView>
+    <ScrollView nestedScrollEnabled={true}>
       <View className="px-5 py-2 w-full">
         {images?.length > 0 && <ImageView images={images} />}
         <View className="flex flex-row items-center">
@@ -327,7 +327,7 @@ const ImageView = ({ images }) => {
         style={{ height: width - 108 }}
         className="w-[60] ml-2 items-center"
       >
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView nestedScrollEnabled={true} style={{flex:1}} showsVerticalScrollIndicator={false}>
           {images?.map((d, i) => (
             <TouchableOpacity
               className={` ${i === index && "border border-red-300"} my-1`}
