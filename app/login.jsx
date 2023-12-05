@@ -69,6 +69,20 @@ export default function Login() {
         // }).then(e=>{
         //   dispatch(storeUser(e.data))
         // })
+        if (res.data.user.role != 1) {
+          dispatch(hideLoader());
+          toast.show({
+            render: (id) => (
+              <InfoAlert
+                id={id}
+                title={"!Ops"}
+                isClosable={false}
+                variant={"solid"}
+                description={"User is invalid"}
+              />
+            ),
+          });
+        }
         dispatch(storeUser(res.data));
         await storeData("USER", res.data);
         router.replace("/user");
