@@ -2,7 +2,7 @@
   "expo": {
     "name": "Banglamart Ecommerce",
     "slug": "banglamart",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -24,7 +24,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.banglamart.banglamart",
-      "versionCode":3
+      "versionCode":4
     },
     "updates": {
       "url": "https://u.expo.dev/bb365e11-3cf2-4d26-aeac-1d5c88c8fa59",

@@ -25,6 +25,7 @@ import InputButton from "../productDetails/InputButton";
 import { hideLoader, showLoader } from "../../reducers/loader";
 import InfoAlert from "../components/main/InfoAlert";
 import RadioButton from "../components/main/RadioButton";
+import { StatusBar } from "expo-status-bar";
 
 export default function MyCart() {
   const user = useSelector((s) => s.user);
@@ -162,6 +163,7 @@ export default function MyCart() {
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
+      <StatusBar style="dark" />
       <ScrollView className="px-5">
         <VStack space={3} alignItems="center">
           <View />
@@ -171,7 +173,7 @@ export default function MyCart() {
           {data?.length == 0 ? (
             <View className="flex-1 items-center justify-center h-[60vh]">
               <SimpleLineIcons name="info" size={24} color="black" />
-              <Text className="my-2 font-bold">No Order</Text>
+              <Text className="my-2 font-bold">Cart is Empty</Text>
             </View>
           ) : null}
           {!data && (

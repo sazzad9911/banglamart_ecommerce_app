@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useFocusEffect } from "expo-router";
 import { getApi } from "../../apis";
 import OrderCart from "../components/products/OrderCart";
+import { StatusBar } from "expo-status-bar";
 
 export default function Cancelled() {
   const [data, setData] = useState();
@@ -29,6 +30,7 @@ export default function Cancelled() {
   });
   return (
     <ScrollView className="px-5">
+      <StatusBar style="dark" />
       <VStack space={3} alignItems="center">
         <View />
         {data ? (

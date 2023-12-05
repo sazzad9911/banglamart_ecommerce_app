@@ -40,7 +40,9 @@ export default function CurrentCampaign() {
           source={{ uri: `${url}${data?.image}` }}
         />
         <AntDesign onPress={()=>{
-         
+         if(!products){
+          return
+        }
          let arr=[]
          products.map(d=>{
           arr.push(d.product)

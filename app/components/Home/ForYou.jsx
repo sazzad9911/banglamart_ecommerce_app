@@ -22,6 +22,9 @@ export default function ForYou() {
       <View className="mx-5 flex flex-row justify-between  my-4 mb-2">
         <Text className="text-lg ">For You</Text>
         <AntDesign onPress={() => {
+          if(!products){
+            return
+          }
           let arr=[]
           products.map(d=>{
            arr.push(d.productInfo)

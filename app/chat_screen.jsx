@@ -9,6 +9,7 @@ import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { getApi, postApi, url } from "../apis";
 import { hideLoader, showLoader } from "../reducers/loader";
 import socket from "../apis/socket";
+import { StatusBar } from "expo-status-bar";
 
 export default function ChatScreen() {
   const user = useSelector((s) => s.user);
@@ -91,6 +92,7 @@ export default function ChatScreen() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <GiftedChat 
         messages={messages}
         onSend={(m) => {

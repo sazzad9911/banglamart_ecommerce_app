@@ -23,6 +23,9 @@ export default function BargainingProduct() {
         <Text className="text-lg ">Bargaining Product</Text>
         <AntDesign
           onPress={() => {
+            if(!products){
+              return
+            }
             dispatch(storeDeliver(products));
             router.push({
               pathname: "/see_more",

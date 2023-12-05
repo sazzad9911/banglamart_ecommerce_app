@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 import { LogBox } from "react-native";
 import Loader from "./components/main/Loader";
+import { StatusBar } from "expo-status-bar";
 LogBox.ignoreLogs([
   "In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.",
 ]);
@@ -18,6 +19,7 @@ export default function Layout() {
     <NativeBaseProvider>
       <Provider style={{ flex: 1 }} store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
+          <StatusBar style="light" backgroundColor="#fff"/>
           <Stack>
             <Stack.Screen
               name="index"

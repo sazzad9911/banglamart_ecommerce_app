@@ -133,6 +133,7 @@ export default function Login() {
 
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <StatusBar style="dark" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ minHeight: height, justifyContent: "center" }}>
           <View className=" w-full items-center ">

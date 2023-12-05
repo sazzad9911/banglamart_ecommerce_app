@@ -21,6 +21,9 @@ export default function NewProduct() {
         <Text className="text-lg ">New Product</Text>
         <AntDesign
           onPress={() => {
+            if(!products){
+              return
+            }
             dispatch(storeDeliver(products));
             router.push({
               pathname: "/see_more",

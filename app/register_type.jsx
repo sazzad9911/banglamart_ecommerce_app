@@ -23,7 +23,7 @@ export default function RegisterType() {
     <KeyboardAvoidingView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ minHeight: height, justifyContent: "center" }}>
-          <StatusBar style="auto" />
+        <StatusBar style="dark" />
 
           <TouchableOpacity onPress={()=>{
             router.push("/phone_register")

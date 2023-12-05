@@ -83,6 +83,7 @@ export default function Search() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <View
         style={{ marginTop: inset.top + 10 }}
         className="flex flex-row mx-[20px]"

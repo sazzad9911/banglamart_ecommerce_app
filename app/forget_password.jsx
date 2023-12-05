@@ -22,6 +22,7 @@ export default function ForgetPassword() {
   const [checked, setChecked] = React.useState(false);
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <StatusBar style="dark" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ minHeight: height, justifyContent: "center" }}>
           <View className=" w-full items-center ">

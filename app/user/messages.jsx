@@ -10,6 +10,7 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { VStack } from "native-base";
 import Avatar from "../components/main/Avatar";
 import deliverData, { storeDeliver } from "../../reducers/dataDeliver";
+import { StatusBar } from "expo-status-bar";
 
 export default function Messages() {
   const user = useSelector((s) => s.user);
@@ -33,6 +34,7 @@ export default function Messages() {
 
   return (
     <ScrollView>
+      <StatusBar style="dark" />
       <VStack space={3}>
         <View />
         {data?.map((d, i) => (

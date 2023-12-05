@@ -23,6 +23,7 @@ import { json2array, numberToArray, storeData } from "../action";
 import { postApi, putApi } from "../apis";
 import { storeUser } from "../reducers/user";
 import { hideLoader, showLoader } from "../reducers/loader";
+import { StatusBar } from "expo-status-bar";
 
 export default function Update() {
   const [values, setValues] = useState({
@@ -118,6 +119,7 @@ export default function Update() {
   }
   return (
     <ScrollView className="bg-[#ffffff]" showsVerticalScrollIndicator={false}>
+      <StatusBar style="dark" />
       <Stack className="px-5 py-4" space={4} w="100%" alignItems="center">
         <Input
           value={values.name}

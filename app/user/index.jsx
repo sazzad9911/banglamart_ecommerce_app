@@ -10,6 +10,7 @@ import NewProduct from "../components/Home/NewProduct";
 import ForYou from "../components/Home/ForYou";
 import BargainingProduct from "../components/Home/BargainingProduct";
 import { getApi } from "../../apis";
+import { StatusBar } from "expo-status-bar";
 
 export default function Home() {
   const [images,setImages]=useState()
@@ -23,6 +24,7 @@ export default function Home() {
   }
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
+      <StatusBar style="dark" />
       <Slider images={images} />
       <Categories/>
       <Campaign/>

@@ -99,13 +99,14 @@ export default function PhoneRegister() {
   }
   return (
     <KeyboardAvoidingView style={styles.container}>
+      <StatusBar style="dark" />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ minHeight: height, justifyContent: "center" }}>
           <View className=" w-full items-center mb-5">
             <Image style={styles.image} source={require("../assets/ss.jpg")} />
             <Text className="text-lg">Register Here</Text>
           </View>
-          <StatusBar style="auto" />
+          
           <View style={[styles.inputView, { marginBottom: 20 }]}>
             <TextInput
               style={styles.TextInput}

@@ -36,6 +36,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { hideLoader, showLoader } from "../../reducers/loader";
 import InfoAlert from "../components/main/InfoAlert";
 import { storeDeliver } from "../../reducers/dataDeliver";
+import { StatusBar } from "expo-status-bar";
 
 export default function ProductDetails() {
   const { id } = useLocalSearchParams();
@@ -197,6 +198,7 @@ export default function ProductDetails() {
   }
   return (
     <ScrollView nestedScrollEnabled={true}>
+      <StatusBar style="dark" />
       <View className="px-5 py-2 w-full">
         {images?.length > 0 && <ImageView images={images} />}
         <View className="flex flex-row items-center">

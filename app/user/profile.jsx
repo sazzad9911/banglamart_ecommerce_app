@@ -23,6 +23,7 @@ import { url } from "../../apis";
 import { pickImage, storeData } from "../../action";
 import { storeUser } from "../../reducers/user";
 import { useState } from "react";
+import { StatusBar } from "expo-status-bar";
 
 export default function Profile() {
   const inset = useSafeAreaInsets();
@@ -38,6 +39,7 @@ export default function Profile() {
   }
   return (
     <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <View
         style={{
           marginTop: inset?.top,

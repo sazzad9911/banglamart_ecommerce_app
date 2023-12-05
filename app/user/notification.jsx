@@ -8,6 +8,7 @@ import { useState } from "react";
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { hideLoader, showLoader } from "../../reducers/loader";
 import Loader from "../components/Loader";
+import { StatusBar } from "expo-status-bar";
 
 export default function Notification() {
   const user = useSelector((s) => s.user);
@@ -32,6 +33,7 @@ export default function Notification() {
   }
   return (
     <ScrollView>
+      <StatusBar style="dark" />
       <Stack space={3}>
         <View/>
         {data?.map((d, i) => (

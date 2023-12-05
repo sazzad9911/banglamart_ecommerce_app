@@ -5,6 +5,7 @@ import { SimpleLineIcons } from "@expo/vector-icons";
 import { useLocalSearchParams } from "expo-router";
 import { useSelector } from "react-redux";
 import Header from "./components/Header";
+import { StatusBar } from "expo-status-bar";
 
 export default function See_more() {
    const values=useSelector(s=>s.deliverData)
@@ -13,6 +14,7 @@ export default function See_more() {
   return (
     <View style={{ flex: 1 }}>
         <Header title={name}/>
+        <StatusBar style="dark" />
       <ScrollView>
         <View className="flex flex-row flex-wrap px-5 py-2 justify-center bg-gray-100">
           {values?.map((data, i) => (

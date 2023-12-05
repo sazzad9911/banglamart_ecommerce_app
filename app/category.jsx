@@ -67,6 +67,7 @@ export default function Category() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <Header title={name} />
       <ScrollView
         onScroll={(e) => {
