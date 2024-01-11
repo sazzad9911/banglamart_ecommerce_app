@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "249490552965",
+    "firebase_url": "https://banglamart-8ea6a-default-rtdb.firebaseio.com",
+    "project_id": "banglamart-8ea6a",
+    "storage_bucket": "banglamart-8ea6a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249490552965:android:6c655f23c4350c51ca91ec",
+        "android_client_info": {
+          "package_name": "com.banglamart.banglamart"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249490552965-91p5nmpjka4fvj7985fbtlf0nndl6j13.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaz8xFPPbbs2eY3UPcORMhUDXHmemHqAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249490552965-91p5nmpjka4fvj7985fbtlf0nndl6j13.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

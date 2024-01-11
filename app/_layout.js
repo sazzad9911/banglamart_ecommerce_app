@@ -5,21 +5,24 @@ import { NativeBaseProvider } from "native-base";
 import "react-native-reanimated";
 import "react-native-gesture-handler";
 import Header from "./components/Header";
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import store from "../store";
 import { LogBox } from "react-native";
 import Loader from "./components/main/Loader";
 import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+
 LogBox.ignoreLogs([
   "In React 18, SSRProvider is not necessary and is a noop. You can remove it from your app.",
 ]);
 
 export default function Layout() {
+ 
   return (
     <NativeBaseProvider>
       <Provider style={{ flex: 1 }} store={store}>
         <GestureHandlerRootView style={{ flex: 1 }}>
-          <StatusBar style="light" backgroundColor="#fff"/>
+          <StatusBar style="light" backgroundColor="#fff" />
           <Stack>
             <Stack.Screen
               name="index"
@@ -102,10 +105,10 @@ export default function Layout() {
               name="webview"
               options={{
                 href: "/webview",
-                headerShown:false
+                headerShown: false,
               }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="order_list"
               options={{
                 href: "/order_list",
@@ -119,7 +122,7 @@ export default function Layout() {
                 header: (props) => <Header title="Messages" {...props} />,
               }}
             />
-             <Stack.Screen
+            <Stack.Screen
               name="category"
               options={{
                 href: "/category",

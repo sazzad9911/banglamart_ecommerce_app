@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>249490552965-17voo084a4494m27vind652q5rhtkmmc.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.249490552965-17voo084a4494m27vind652q5rhtkmmc</string>
+	<key>API_KEY</key>
+	<string>AIzaSyArswCzeEM73bMDvtbneZwa9sJz1v5hf5Q</string>
+	<key>GCM_SENDER_ID</key>
+	<string>249490552965</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.banglamart.banglamart</string>
+	<key>PROJECT_ID</key>
+	<string>banglamart-8ea6a</string>
+	<key>STORAGE_BUCKET</key>
+	<string>banglamart-8ea6a.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:249490552965:ios:c01a466a8f37b7e5ca91ec</string>
+	<key>DATABASE_URL</key>
+	<string>https://banglamart-8ea6a-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

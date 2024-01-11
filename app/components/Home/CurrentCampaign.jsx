@@ -36,7 +36,7 @@ export default function CurrentCampaign() {
             width: 140,
             
           }}
-          className="absolute top-0 left-0"
+          className="absolute top-0 left-5"
           source={{ uri: `${url}${data?.image}` }}
         />
         <AntDesign onPress={()=>{
